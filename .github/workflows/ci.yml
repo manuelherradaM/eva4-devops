@@ -1,4 +1,4 @@
-name: CI DevOps Evaluación Módulo 4
+name: Java CI con Maven + Selenium + SonarQube
 
 on:
   push:
@@ -7,53 +7,44 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-test-sonar:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    # 1) Clonar repo
-    - name: Checkout
+    - name: Post Checkout
       uses: actions/checkout@v3
 
-    # 2) JDK 17
-    - name: Set up JDK 17
+    - name: Set Up JDK 17
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
 
-    # 3) Cache Maven
     - name: Cache Maven
       uses: actions/cache@v3
       with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
+        path: |
+          ~/.m2/repository
+          !~/.m2/repository/org/openjfx
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
 
-    # 4) Instalar Google Chrome
+    # Instalar Google Chrome
     - name: Install Chrome
       uses: browser-actions/setup-chrome@v1
 
-    # 5) Instalar Chromedriver que coincida
-    - name: Install Chromedriver
-      uses: nanasess/setup-chromedriver@v2
-      with:
-        chromedriver-version: 'latest'
+    # Instalar ChromeDriver
+    - name: Install ChromeDriver
+      uses: browser-actions/setup-chromedriver@v1
 
-    # 6) Ejecutar pruebas (JUnit + Selenium)
+    # Compilar y testear
     - name: Build & Test (headless)
-      env:
-        WEBDRIVER_CHROME_DRIVER: ${{ steps.Install_Chromedriver.outputs.chromedriver-path }}
-      run: |
-        echo "Chromedriver path: $WEBDRIVER_CHROME_DRIVER"
-        mvn -B clean test -Dwebdriver.chrome.driver="$WEBDRIVER_CHROME_DRIVER"
+      run: mvn -Dtest=devops.UsuarioTest,devops.UsuarioSeleniumTest,devops.UsuarioFuncionalTest test
 
-    # 7) Análisis SonarQube
+    # Análisis de SonarQube
     - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: |
-        mvn -B sonar:sonar \
-          -Dsonar.projectKey=eva4-devops \
-          -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
-          -Dsonar.login=$SONAR_TOKEN
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
