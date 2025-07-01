@@ -1,10 +1,13 @@
 package devops;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
+
 
 import spark.Spark;
 
