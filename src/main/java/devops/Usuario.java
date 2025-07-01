@@ -1,3 +1,5 @@
+package devops;
+
 public class Usuario {
     private String nombre;
     private double peso;
@@ -15,11 +17,7 @@ public class Usuario {
         return peso;
     }
 
-   public void actualizarPeso(double nuevoPeso) {
-    this.peso = nuevoPeso;   // arreglado
-}
-
-    public void mostrarInformacion() {
-        System.out.println("Usuario: " + nombre + ", Peso Actual: " + peso + " kg");
+    public void actualizarPeso(double nuevoPeso) {
+        this.peso = nuevoPeso;
     }
 }

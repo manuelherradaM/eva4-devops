@@ -1,32 +1,74 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>cl.slep.devops</groupId>
-    <artifactId>mi-proyecto-devops</artifactId>
+
+    <groupId>devops</groupId>
+    <artifactId>eva4-devops</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <!-- ==== DEPENDENCIAS ==== -->
     <dependencies>
-        <!-- JUnit 5 para pruebas -->
+        <!-- JUnit 5 (pruebas unitarias) -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>5.10.2</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Spark Java (mini-servidor web) -->
+        <dependency>
+            <groupId>com.sparkjava</groupId>
+            <artifactId>spark-core</artifactId>
+            <version>2.9.4</version>
+        </dependency>
+
+        <!-- Selenium (pruebas funcionales) -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>4.21.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
+    <!-- ==== BUILD / PLUGINS ==== -->
     <build>
         <plugins>
-            <!-- Plugin para ejecutar pruebas con JUnit 5 -->
+            <!-- Compilador -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+
+            <!-- Surefire = ejecuta JUnit 5 en `mvn test` -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
+                <configuration>
+                     <forkCount>0</forkCount>
+                     <reuseForks>false</reuseForks>
+                </configuration>
+            </plugin>
+
+            <!-- Ejecutar la app web con `mvn exec:java` -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <mainClass>devops.App</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>
-
 </project>
