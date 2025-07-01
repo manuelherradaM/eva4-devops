@@ -14,12 +14,14 @@ public class UsuarioSeleniumTest {
 
     private WebDriver driver;
 
-    @BeforeEach
-    public void setUp() {
-        // Asegúrate de tener el ChromeDriver instalado y en el PATH
-        System.setProperty("webdriver.chrome.driver", "C:/WebDriver/bin/chromedriver.exe"); // Ajusta esta ruta según tu sistema
-        driver = new ChromeDriver();
-    }
+@BeforeEach
+void setUp() {
+    ChromeOptions options = new ChromeOptions();
+    options.addArguments("--headless=new");          // ejecuta sin ventana
+    options.addArguments("--no-sandbox");            // necesario en CI Linux
+    options.addArguments("--disable-dev-shm-usage"); // evita problemas de /dev/shm
+    driver = new ChromeDriver(options);
+}
 
     @Test
     public void deberiaMostrarInformacionUsuario() {

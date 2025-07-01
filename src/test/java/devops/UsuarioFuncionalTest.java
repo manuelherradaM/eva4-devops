@@ -26,10 +26,14 @@ class UsuarioFuncionalTest {
     }
 
     // ---------- Preparar y cerrar navegador ----------
-    @BeforeEach
-    void setUpDriver() {
-        driver = new ChromeDriver();  // requiere chromedriver en PATH
-    }
+@BeforeEach
+void setUp() {
+    ChromeOptions options = new ChromeOptions();
+    options.addArguments("--headless=new");          // ejecuta sin ventana
+    options.addArguments("--no-sandbox");            // necesario en CI Linux
+    options.addArguments("--disable-dev-shm-usage"); // evita problemas de /dev/shm
+    driver = new ChromeDriver(options);
+}
 
     @AfterEach
     void tearDownDriver() {
