@@ -1,0 +1,48 @@
+name: CI DevOps Evaluación Módulo 4
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clonar repositorio
+      uses: actions/checkout@v3
+
+    - name: Instalar Java 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Configurar caché de Maven
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven
+
+    - name: Instalar Chrome
+      uses: browser-actions/setup-chrome@v1
+
+    - name: Verificar versión de Chrome
+      run: chrome --version
+
+    - name: Build + Test (JUnit + Selenium)
+      run: mvn clean test
+
+    - name: Análisis de calidad con SonarQube
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        mvn -B sonar:sonar \
+          -Dsonar.projectKey=eva4-devops \
+          -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+          -Dsonar.login=$SONAR_TOKEN
+
