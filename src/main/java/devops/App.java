@@ -31,7 +31,7 @@ public class App {
             return "<!DOCTYPE html><html><body>"
                  + "<h3>Resultado</h3>"
                  + "<p id='nombre'>Nombre: " + u.getNombre() + "</p>"
-                 + "<p id='peso'>Peso: " + u.getPeso() + "</p>"
+                 
                  + "<p id='pesoActual'>" + u.getPeso() + "</p>"
                  + "</body></html>";
         });
