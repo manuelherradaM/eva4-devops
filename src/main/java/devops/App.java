@@ -13,12 +13,11 @@ public class App {
             + "<!DOCTYPE html><html><head><meta charset='utf-8'><title>Peso Usuario</title></head><body>"
             + "<h2>Actualizar peso</h2>"
             + "<form action='/actualizar' method='post'>"
-            + "Nombre: <input id='nombre' name='nombre'><br>"
-            + "Peso inicial: <input id='peso' name='peso'><br>"
-            + "Nuevo peso: <input id='nuevoPeso' name='nuevoPeso'><br>"
+            + "<label>Nombre:</label> <input id='nombre' name='nombre'><br>"
+            + "<label>Peso inicial:</label> <input id='peso' name='peso'><br>"
+            + "<label>Nuevo peso:</label> <input id='nuevoPeso' name='nuevoPeso'><br>"
             + "<button type='submit'>Actualizar</button>"
-            + "</form></body></html>"
-        );
+            + "</form></body></html>");
 
         // ---------- Procesa formulario y muestra resultado ----------
         post("/actualizar", (req, res) -> {
@@ -30,8 +29,7 @@ public class App {
 
             return "<!DOCTYPE html><html><body>"
                  + "<h3>Resultado</h3>"
-                 + "<p id='nombre'>Nombre: " + u.getNombre() + "</p>"
-                 
+                 + "<p>Nombre: " + u.getNombre() + "</p>"
                  + "<p id='pesoActual'>" + u.getPeso() + "</p>"
                  + "</body></html>";
         });

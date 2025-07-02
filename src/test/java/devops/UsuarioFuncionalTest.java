@@ -1,52 +1,40 @@
 package devops;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.WebDriver;
+
+import org.junit.jupiter.api.*;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.*;
 
-import org.openqa.selenium.*;
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class UsuarioFuncionalTest {
 
+    private static WebDriver driver;
+    private static final String BASE_URL = "http://localhost:8080/";
 
-import spark.Spark;
-
-class UsuarioFuncionalTest {
-
-    private WebDriver driver;
-
-    // ---------- Levantar y apagar el servidor ----------
+    /* ---------- Levanta Spark ---------- */
     @BeforeAll
-    static void startServer() throws InterruptedException {
-        // Inicia Spark (web) en otro hilo
+    static void iniciarServidor() throws InterruptedException {
         new Thread(() -> App.main(null)).start();
-        Thread.sleep(3000);           // espera a que escuche el puerto
+        Thread.sleep(3_000);
+        ChromeOptions opt = new ChromeOptions();
+        opt.addArguments("--headless=new", "--no-sandbox", "--disable-dev-shm-usage");
+        driver = new ChromeDriver(opt);
     }
 
+    /* ---------- Cierra ---------- */
     @AfterAll
-    static void stopServer() {
-        Spark.stop();
+    static void apagarServidor() {
+        if (driver != null) driver.quit();
+        spark.Spark.stop();
     }
 
-    // ---------- Preparar y cerrar navegador ----------
-@BeforeEach
-void setUp() {
-    ChromeOptions options = new ChromeOptions();
-    options.addArguments("--headless=new");          // ejecuta sin ventana
-    options.addArguments("--no-sandbox");            // necesario en CI Linux
-    options.addArguments("--disable-dev-shm-usage"); // evita problemas de /dev/shm
-    driver = new ChromeDriver(options);
-}
-
-    @AfterEach
-    void tearDownDriver() {
-        driver.quit();
-    }
-
-    // ---------- Prueba funcional ----------
+    /* ---------- Escenario completo ---------- */
     @Test
+    @Order(1)
     void flujoCompletoActualizarPeso() {
-        driver.get("http://localhost:8080/");
+        driver.get(BASE_URL);
 
         driver.findElement(By.name("nombre")).sendKeys("Manuel");
         driver.findElement(By.name("peso")).sendKeys("90");

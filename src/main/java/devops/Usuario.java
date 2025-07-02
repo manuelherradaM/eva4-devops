@@ -1,6 +1,7 @@
 package devops;
 
 public class Usuario {
+
     private String nombre;
     private double peso;
 
@@ -9,15 +10,15 @@ public class Usuario {
         this.peso = peso;
     }
 
+    public void actualizarPeso(double nuevoPeso) {
+        this.peso = nuevoPeso;
+    }
+
     public String getNombre() {
         return nombre;
     }
 
     public double getPeso() {
         return peso;
-    }
-
-    public void actualizarPeso(double nuevoPeso) {
-        this.peso = nuevoPeso;
     }
 }
