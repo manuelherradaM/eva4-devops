@@ -48,7 +48,7 @@ public class UsuarioSeleniumTest {
         assertTrue(nombreTexto.startsWith("Nombre: Manuel"));
 
         // Valida peso actualizado
-        String pesoTexto = driver.findElement(By.id("pesoActual")).getText();
+        String pesoTexto = driver.findElement(By.name("pesoActual")).getText();
         assertEquals("80.0", pesoTexto);
     }
 }
