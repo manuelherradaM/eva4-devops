@@ -27,11 +27,12 @@ public class App {
 
             u.actualizarPeso(Double.parseDouble(req.queryParams("nuevoPeso")));
 
-            return "<!DOCTYPE html><html><body>"
-                 + "<h3>Resultado</h3>"
-                 + "<p>Nombre: " + u.getNombre() + "</p>"
-                 + "<p>pesoActual" + u.getPeso() + "</p>"
-                 + "</body></html>";
+return "<!DOCTYPE html><html><body>"
+     + "<h3>Resultado</h3>"
+     + "<p id='nombre'>Nombre: " + u.getNombre() + "</p>"
+     + "<p id='pesoActual' name='pesoActual'>" + u.getPeso() + "</p>"
+     + "</body></html>";
+
         });
     }
 }
