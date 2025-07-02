@@ -41,7 +41,7 @@ public class UsuarioFuncionalTest {
         driver.findElement(By.name("nuevoPeso")).sendKeys("80");
         driver.findElement(By.cssSelector("button[type='submit']")).click();
 
-        String pesoMostrado = driver.findElement(By.id("pesoActual")).getText();
+        String pesoMostrado = driver.findElement(By.name("pesoActual")).getText();
         assertEquals("80.0", pesoMostrado);
     }
 }
