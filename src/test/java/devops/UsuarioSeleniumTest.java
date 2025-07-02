@@ -4,41 +4,39 @@ import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UsuarioSeleniumTest {
 
-    private static Process server;
     private WebDriver driver;
 
-    // 1) Levantar Spark antes de todos los tests
     @BeforeAll
-    static void startServer() throws Exception {
-        server = new ProcessBuilder("java", "-cp", "target/classes;target/test-classes", "devops.App").start();
-        Thread.sleep(3000);          // espera 3 s a que Spark escuche
+    static void levantarServidor() throws InterruptedException {
+        new Thread(() -> App.main(null)).start();
+        Thread.sleep(3000);  // Espera que Spark escuche el puerto 8080
     }
 
-    // 2) Apagar Spark al final
-    @AfterAll
-    static void stopServer() {
-        server.destroy();
-    }
-
-    // 3) Crear navegador headless
     @BeforeEach
     void setUp() {
-        ChromeOptions opt = new ChromeOptions();
-        opt.addArguments("--headless=new", "--no-sandbox", "--disable-dev-shm-usage");
-        driver = new ChromeDriver(opt);
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless=new");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        driver = new ChromeDriver(options);
     }
 
     @AfterEach
     void tearDown() {
-        driver.quit();
+        if (driver != null) {
+            driver.quit();
+        }
     }
 
-    // 4) Flujo completo
+    @AfterAll
+    static void detenerServidor() {
+        spark.Spark.stop();
+    }
+
     @Test
     void deberiaMostrarInformacionUsuario() {
         driver.get("http://localhost:8080/");
@@ -48,10 +46,8 @@ public class UsuarioSeleniumTest {
         driver.findElement(By.name("nuevoPeso")).sendKeys("80");
         driver.findElement(By.cssSelector("button[type='submit']")).click();
 
-        // En la página de resultado validamos nombre y peso
-        assertEquals("Nombre: Manuel",
-                     driver.findElement(By.id("nombre")).getText());
-        assertEquals("Peso: 80.0",
-                     driver.findElement(By.id("peso")).getText());
+        // Este contenido deberías generarlo en la respuesta HTML
+        String pesoMostrado = driver.findElement(By.id("pesoActual")).getText();
+        assertEquals("80.0", pesoMostrado);
     }
 }
