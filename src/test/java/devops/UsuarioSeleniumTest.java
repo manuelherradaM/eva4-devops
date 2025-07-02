@@ -1,50 +1,57 @@
 package devops;
 
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.BeforeAll; 
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.junit.jupiter.api.*;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UsuarioSeleniumTest {
 
+    private static Process server;
     private WebDriver driver;
-@BeforeAll
-static void startServer() throws InterruptedException {
-    new Thread(() -> App.main(null)).start();
-    Thread.sleep(3000);           // espera a que escuche el puerto
-}
 
-@BeforeEach
-void setUp() {
-    ChromeOptions options = new ChromeOptions();
-    options.addArguments("--headless=new");          // ejecuta sin ventana
-    options.addArguments("--no-sandbox");            // necesario en CI Linux
-    options.addArguments("--disable-dev-shm-usage"); // evita problemas de /dev/shm
-    driver = new ChromeDriver(options);
-}
+    // 1) Levantar Spark antes de todos los tests
+    @BeforeAll
+    static void startServer() throws Exception {
+        server = new ProcessBuilder("java", "-cp", "target/classes;target/test-classes", "devops.App").start();
+        Thread.sleep(3000);          // espera 3 s a que Spark escuche
+    }
 
-    @Test
-    public void deberiaMostrarInformacionUsuario() {
-        driver.get("http://localhost:8080");
+    // 2) Apagar Spark al final
+    @AfterAll
+    static void stopServer() {
+        server.destroy();
+    }
 
-        WebElement nombre = driver.findElement(By.id("nombre"));
-        WebElement peso = driver.findElement(By.id("peso"));
-
-        assertEquals("Nombre: Manuel", nombre.getText());
-        assertEquals("Peso: 81.0", peso.getText());
+    // 3) Crear navegador headless
+    @BeforeEach
+    void setUp() {
+        ChromeOptions opt = new ChromeOptions();
+        opt.addArguments("--headless=new", "--no-sandbox", "--disable-dev-shm-usage");
+        driver = new ChromeDriver(opt);
     }
 
     @AfterEach
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
+    void tearDown() {
+        driver.quit();
+    }
+
+    // 4) Flujo completo
+    @Test
+    void deberiaMostrarInformacionUsuario() {
+        driver.get("http://localhost:8080/");
+
+        driver.findElement(By.name("nombre")).sendKeys("Manuel");
+        driver.findElement(By.name("peso")).sendKeys("90");
+        driver.findElement(By.name("nuevoPeso")).sendKeys("80");
+        driver.findElement(By.cssSelector("button[type='submit']")).click();
+
+        // En la página de resultado validamos nombre y peso
+        assertEquals("Nombre: Manuel",
+                     driver.findElement(By.id("nombre")).getText());
+        assertEquals("Peso: 80.0",
+                     driver.findElement(By.id("peso")).getText());
     }
 }
