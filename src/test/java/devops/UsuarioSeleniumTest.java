@@ -15,6 +15,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UsuarioSeleniumTest {
 
     private WebDriver driver;
+@BeforeAll
+static void startServer() throws InterruptedException {
+    new Thread(() -> App.main(null)).start();
+    Thread.sleep(3000);           // espera a que escuche el puerto
+}
 
 @BeforeEach
 void setUp() {

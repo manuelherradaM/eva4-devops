@@ -46,7 +46,7 @@ void setUp() {
     // ---------- Prueba funcional ----------
     @Test
     void flujoCompletoActualizarPeso() {
-        driver.get("http://localhost:4567/");
+        driver.get("http://localhost:8080/");
 
         driver.findElement(By.name("nombre")).sendKeys("Manuel");
         driver.findElement(By.name("peso")).sendKeys("90");
