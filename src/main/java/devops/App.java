@@ -9,15 +9,16 @@ public class App {
         port(8080); // localhost:8080
 
         // ---------- Página principal ----------
-        get("/", (req, res) -> ""
-            + "<!DOCTYPE html><html><head><meta charset='utf-8'><title>Peso Usuario</title></head><body>"
-            + "<h2>Actualizar peso</h2>"
-            + "<form action='/actualizar' method='post'>"
-            + "Nombre: <input name='nombre'><br>"
-            + "Peso inicial: <input name='peso'><br>"
-            + "Nuevo peso: <input name='nuevoPeso'><br>"
-            + "<button type='submit'>Actualizar</button>"
-            + "</form></body></html>");
+get("/", (req, res) -> ""
+    + "<!DOCTYPE html><html><head><meta charset='utf-8'><title>Peso Usuario</title></head><body>"
+    + "<h2>Actualizar peso</h2>"
+    + "<form action='/actualizar' method='post'>"
+    + "Nombre: <input id='nombre' name='nombre'><br>"
+    + "Peso inicial: <input id='peso' name='peso'><br>"
+    + "Nuevo peso: <input id='nuevoPeso' name='nuevoPeso'><br>"
+    + "<button type='submit'>Actualizar</button>"
+    + "</form></body></html>");
+
 
         // ---------- Procesa formulario y muestra resultado ----------
         post("/actualizar", (req, res) -> {
