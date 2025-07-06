@@ -4,6 +4,10 @@ import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,7 +21,7 @@ public class UsuarioFuncionalTest {
     @BeforeAll
     static void iniciarServidor() throws InterruptedException {
         new Thread(() -> App.main(null)).start();
-        Thread.sleep(3_000);
+        Thread.sleep(3_000);                    // espera a que Spark levante
         ChromeOptions opt = new ChromeOptions();
         opt.addArguments("--headless=new", "--no-sandbox", "--disable-dev-shm-usage");
         driver = new ChromeDriver(opt);
@@ -41,7 +45,13 @@ public class UsuarioFuncionalTest {
         driver.findElement(By.name("nuevoPeso")).sendKeys("80");
         driver.findElement(By.cssSelector("button[type='submit']")).click();
 
-        String pesoMostrado = driver.findElement(By.name("pesoActual")).getText();
-        assertEquals("80.0", pesoMostrado);
+        // Espera explícita: aguarda hasta que el elemento sea visible
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebElement pesoMostradoElement = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.name("pesoActual"))
+        );
+
+        String pesoMostrado = pesoMostradoElement.getText();
+        assertEquals("80.0", pesoMostrado, "El peso mostrado no coincide con el esperado");
     }
 }
